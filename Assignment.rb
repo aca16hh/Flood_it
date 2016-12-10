@@ -42,16 +42,17 @@ def menu(height, width)
 end
 
 def flood(height, width)
-  board = Array.new[height, width]
+  board = Array.new(height){Array.new(width, 0)}
   i=0
   j=0
-  while(i<height)
+  until(i>=height) do
     while(j<width)
-      board[i, j]=rand(0...5)
-      print(board[i, j]+" ")
+      board[i][j]=rand(0...6)
+      print("#{board[i][j]} ")
       j=j+1
     end
     puts""
+    j=0
     i=i+1
   end
 end
