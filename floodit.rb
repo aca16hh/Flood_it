@@ -56,11 +56,12 @@ def get_board(height, width, high)
   #I initialize my arrays. Board contains the colours to be drawn to the screen while group contains the player's area and all the adjacent same coloured blocks within
   board = Array.new(height){Array.new(width, 0)}
   group = Array.new(height){Array.new(width, 0)}
+  #creates the initial play area of one block
   group[0][0]=1
   colors = [":red", ":green", ":blue", ":cyan", ":magenta", ":yellow"]
   i=0
   j=0
-  #I pick a random colour and assign it to the array. I removed the drawing phase in the method as it could mess with the automated checks
+  #I pick random colours to assign to each coordinate in the array.
   until(i>=height) do
     while(j<width)
       random=colors[rand(0...6)]
@@ -80,18 +81,17 @@ def get_board(height, width, high)
       #moves the loop to the next iteration
       j=j+1
     end
-    puts""
     j=0
     i=i+1
   end
-  #calls the next method
+  #calls the update method instaed of draw board to check if there are any adjacent squares which by chance have the same colour
   update(height, width, high, 0, board, group)
 end
 
 def draw_board(height, width, high, turns, board, group)
   i=0
   j=0
-  #same as get_board but doesn't assign to the arrays
+  #goes through the array and prints spaces with an appropriate background colour for each coordinate
   while(i<height)
     while(j<width)
       if(board[i][j]==":green")
@@ -120,6 +120,7 @@ def play(height, width, high, turns, board, group)
   i=0
   j=0
   completion=0
+  puts""
   #adds to completion allowing me to calculate percentage later
   while(i<height)
     while(j<width)
@@ -156,6 +157,7 @@ def play(height, width, high, turns, board, group)
     turns=turns+1
     board[0][0] =":magenta"
   else
+    #restarts the round if the user mistypes something
     puts "That's not a valid option, please try again"
     play(height, width, high, turns, board, group)
   end
@@ -198,9 +200,7 @@ def update(height, width, high, turns, board, group)
             group[iMinus][j]=1
           end
           until(board[iMinus][j]!=base||iMinus<0) do
-            if board[iMinus][j]==base
-              group[iMinus][j]=1
-            end
+            group[iMinus][j]=1
             iMinus=iMinus-1
           end
         end
@@ -209,9 +209,7 @@ def update(height, width, high, turns, board, group)
             group[i][jMinus]=1
           end
           until(board[i][jMinus]!=base||jMinus<0) do
-            if board[i][jMinus]==base
-              group[i][jMinus]=1
-            end
+            group[i][jMinus]=1
             jMinus=jMinus-1
           end
         end
@@ -228,8 +226,9 @@ end
 def check(height, width, high, turns, board, group)
   i=0
   j=0
-  puts"check"
+  puts""
   base=board[0][0]
+  #checks every block in the board. If any of them are a different colour, the next round starts otherwise the user wins.
   while(i<height)
     while(j<width)
       if(base!=board[i][j])
@@ -240,12 +239,14 @@ def check(height, width, high, turns, board, group)
     j=0
     i=i+1
   end
-  puts "Congratulations, you won!"
+  puts "Congratulations! you won after #{turns}"
+  #updates the high score
   if(turns<high)
     high = turns
     puts "Well Done! You got a new high score."
   end
   puts "press enter to return to main menu"
+  #waits for the user to return
   gets
   menu(height, width, high)
 end
