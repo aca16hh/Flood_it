@@ -53,33 +53,28 @@ end
 
 #this activates when the user starts a new game and draws out a canvas of random dots
 def get_board(height, width, high)
-  #I initialize my arrays
+  #I initialize my arrays. Board contains the colours to be drawn to the screen while group contains the player's area and all the adjacent same coloured blocks within
   board = Array.new(height){Array.new(width, 0)}
   group = Array.new(height){Array.new(width, 0)}
+  group[0][0]=1
   colors = [":red", ":green", ":blue", ":cyan", ":magenta", ":yellow"]
   i=0
   j=0
-  #I pick a random colour and assign it to the array while I draw it
+  #I pick a random colour and assign it to the array. I removed the drawing phase in the method as it could mess with the automated checks
   until(i>=height) do
     while(j<width)
       random=colors[rand(0...6)]
       if(random==":green")
-        print("  ".colorize(:background => :green))
         board[i][j]=":green"
       elsif random==":red"
-        print("  ".colorize(:background => :red)) 
         board[i][j]=":red"
       elsif random==":blue"
-        print("  ".colorize(:background => :blue))
         board[i][j]=":blue"
       elsif random==":yellow"
-        print("  ".colorize(:background => :yellow))
         board[i][j]=":yellow"
       elsif random==":cyan"
-        print("  ".colorize(:background => :cyan))
         board[i][j]=":cyan"
       elsif random==":magenta"
-        print("  ".colorize(:background => :magenta))
         board[i][j]=":magenta"
       end
       #moves the loop to the next iteration
@@ -170,7 +165,6 @@ end
 def update(height, width, high, turns, board, group)
   i=0
   j=0
-  group[0][0]=1
   base=board[0][0]
   #keeps the user from going on in the game forever
   if turns>=999
@@ -187,34 +181,38 @@ def update(height, width, high, turns, board, group)
         jPlus=j+1
         iMinus=i-1
         jMinus=j-1
+        #each of these checks analyses whether there are any adjacent blocks of the same colour which need to be added to the player's group 
         if(iPlus<height)
           if(board[iPlus][j]==base)
             group[iPlus][j]=1
-            board[iPlus][j]=base
           end
         end
         if jPlus<width
           if(board[i][jPlus]==base)
             group[i][jPlus]=1
-            board[i][jPlus]=base
           end
         end
-        if iMinus>=1
-          until(board[iMinus][j]!=base||iMinus==0) do
-            if iMinus>=1
+        #the pluses didn't need an extra loop as the program would naturally come to their later adjacent colours, the minuses will need one to check if there are multiple blocks to be added to the group
+        if iMinus>=0
+          if board[iMinus][j]==base
+            group[iMinus][j]=1
+          end
+          until(board[iMinus][j]!=base||iMinus<0) do
+            if board[iMinus][j]==base
               group[iMinus][j]=1
-              board[iMinus][j]=base
-              iMinus=iMinus-1
             end
+            iMinus=iMinus-1
           end
         end
         if jMinus>=1
-          until(board[i][jMinus]!=base||jMinus==0) do
-            if jMinus>=1
+          if board[i][jMinus]==base
+            group[i][jMinus]=1
+          end
+          until(board[i][jMinus]!=base||jMinus<0) do
+            if board[i][jMinus]==base
               group[i][jMinus]=1
-              board[i][jMinus]=base
-              jMinus=jMinus-1
             end
+            jMinus=jMinus-1
           end
         end
       end
@@ -235,13 +233,7 @@ def check(height, width, high, turns, board, group)
   while(i<height)
     while(j<width)
       if(base!=board[i][j])
-        if turns>0
-          draw_board(height, width, high, turns, board, group)
-        elsif turns==0
-          play(height, width, high, turns, board, group)
-        elsif turns<0
-          quit(0,0)
-        end
+        draw_board(height, width, high, turns, board, group)
       end
       j=j+1
     end
