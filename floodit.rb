@@ -17,9 +17,7 @@ splash.splash
 #This places a line to make it look neater then when the user presses enter, the menu method is activated
 puts""
 gets.chomp
-#I tried to create a loop to exit when the quit method is called
-continue=1
-until (!continue) do
+
 def menu(height, width, high)
   #I list the options for the user's benefit
   puts "main menu"
@@ -45,7 +43,7 @@ def menu(height, width, high)
     width = gets.chomp.to_i
     menu(height, width, high)
   elsif input=="q"
-    quit(0, 0)
+    abort("Thank you for playing")
   #this else clause helps catch if the user mis-types a command and restarts the menu
   else
     puts "that's not a command"
@@ -255,19 +253,10 @@ def check(height, width, high, turns, board, group)
     high = turns
     puts "Well Done! You got a new high score."
   end
+  puts "press enter to return to main menu"
+  gets
   menu(height, width, high)
 end
 
-#method to quit when the user presses q in the main menu
-def quit(height, width)
-  turns=-1
-  puts "Thank you for playing!"
-  continue=0
-  #an intentional error as I couldn't find another way to break the infinite loop
-  menu()
-end
-    
 #calls the start of the program
 menu(9, 14, 999)
-  
-end
